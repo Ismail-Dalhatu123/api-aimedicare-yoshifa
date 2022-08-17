@@ -4,6 +4,10 @@ const {
   validateAddBloodPressure,
 } = require("../models/vitals/BloodPressure");
 const {
+  BodyCallories,
+  validateAddBodyCallories,
+} = require("../models/vitals/Callories");
+const {
   validateAddHeartRate,
   HeartRate,
 } = require("../models/vitals/HeartRate");
@@ -55,6 +59,19 @@ VitalsRouter.post("/blood-pressure/add", async (request, response) => {
     logger(error, response);
   }
 });
+VitalsRouter.post("/body-callories/add", async (request, response) => {
+  try {
+    const { error, value } = validateAddBodyCallories(request.body);
+    if (error) return send400(error, response);
+    const player = await Player.findOne({ id: value.playerId }).select("_id");
+    if (!player) return send404("Player not found!", response);
+    const created = new BodyCallories(value);
+    created.save();
+    send201(response, "Saved", { created });
+  } catch (error) {
+    logger(error, response);
+  }
+});
 VitalsRouter.get("/:playerId/blood-pressure", async (request, response) => {
   try {
     const player = await Player.findOne({ id: request.params.playerId });
@@ -63,6 +80,18 @@ VitalsRouter.get("/:playerId/blood-pressure", async (request, response) => {
       playerId: request.params.playerId,
     });
     send200(response, "Get player blood pressure", { readings, player });
+  } catch (error) {
+    logger(error, response);
+  }
+});
+VitalsRouter.get("/:playerId/body-callories", async (request, response) => {
+  try {
+    const player = await Player.findOne({ id: request.params.playerId });
+    if (!player) return send404("Player not found!", response);
+    const readings = await BodyCallories.find({
+      playerId: request.params.playerId,
+    });
+    send200(response, "Get player body callories", { readings, player });
   } catch (error) {
     logger(error, response);
   }
