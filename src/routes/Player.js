@@ -38,12 +38,12 @@ PlayerRouter.post(
   async (request, response) => {
     try {
       if (!request.file) return send400("Please select an Image", response);
-      const fileUpload = await saveFile(request.file, FILE_EXTENTIONS.IMAGES);
-      if (fileUpload.error) return send400(fileUpload.error.message, response);
       const { error, value } = validatePlayer(request.body);
       if (error) return send400(error, response);
       const isRegistered = await Player.findOne({ id: value.id });
       if (isRegistered) return send403("ID already registered!", response);
+      const fileUpload = await saveFile(request.file, FILE_EXTENTIONS.IMAGES);
+      if (fileUpload.error) return send400(fileUpload.error.message, response);
       const account = new Player({
         ...value,
         image: fileUpload.result.Key,
