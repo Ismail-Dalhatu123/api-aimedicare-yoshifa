@@ -9,8 +9,8 @@ const BloodPressure = Mongoose.model(
       required: true,
     },
     bloodPressure: {
-      upper: { type: Number, required: true },
-      lower: { type: Number, required: true },
+      high: { type: Number, required: true },
+      low: { type: Number, required: true },
     },
     createdAt: {
       type: Date,
@@ -23,8 +23,8 @@ const validateAddBloodPressure = (data) => {
   const Schema = Joi.object({
     playerId: Joi.number().required(),
     bloodPressure: Joi.object({
-      upper: Joi.number().required(),
-      lower: Joi.number().required(),
+      high: Joi.number().required(),
+      low: Joi.number().required(),
     }).required(),
   });
   return Schema.validate(data);
