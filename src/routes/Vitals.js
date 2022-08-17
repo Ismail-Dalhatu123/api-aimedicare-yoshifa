@@ -39,7 +39,6 @@ VitalsRouter.get("/:playerId/heart-rate", async (request, response) => {
     const readings = await HeartRate.find({
       playerId: request.params.playerId,
     });
-    console.log(readings);
     send200(response, "Get player heart rate", { readings, player });
   } catch (error) {
     logger(error, response);
@@ -59,6 +58,7 @@ VitalsRouter.post("/blood-pressure/add", async (request, response) => {
     logger(error, response);
   }
 });
+
 VitalsRouter.post("/body-callories/add", async (request, response) => {
   try {
     const { error, value } = validateAddBodyCallories(request.body);
