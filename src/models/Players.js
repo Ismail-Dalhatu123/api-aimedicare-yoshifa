@@ -30,6 +30,18 @@ const Player = Mongoose.model(
       type: String,
       required: true,
     },
+    height: {
+      type: Number,
+      default: 0,
+    },
+    weight: {
+      type: Number,
+      default: 0,
+    },
+    age: {
+      type: Number,
+      default: 0,
+    },
   })
 );
 
@@ -42,6 +54,9 @@ const validatePlayer = (data) => {
     phoneNumber: Joi.string().required(),
     fullname: Joi.string().required(),
     expiry: Joi.string().required(),
+    height: Joi.number().required(),
+    weight: Joi.number().required(),
+    age: Joi.number().required(),
   });
   return Schema.validate(data);
 };
