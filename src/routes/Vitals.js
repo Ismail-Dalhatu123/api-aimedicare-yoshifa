@@ -15,6 +15,10 @@ const {
   validateAddHeartRate,
   HeartRate,
 } = require("../models/vitals/HeartRate");
+const {
+  SportData,
+  validateAddSportData,
+} = require("../models/vitals/SportData");
 const send200 = require("../utils/http/send200");
 const send201 = require("../utils/http/send201");
 const send400 = require("../utils/http/send400");
@@ -90,6 +94,21 @@ VitalsRouter.post("/blood-oxygen/add", async (request, response) => {
     logger(error, response);
   }
 });
+
+VitalsRouter.post("/sport-data/add", async (request, response) => {
+  try {
+    const { error, value } = validateAddSportData(request.body);
+    if (error) return send400(error, response);
+    const player = await Player.findOne({ id: value.playerId }).select("_id");
+    if (!player) return send404("Player not found!", response);
+    const created = new SportData(value);
+    created.save();
+    send201(response, "Saved", { created });
+  } catch (error) {
+    logger(error, response);
+  }
+});
+
 VitalsRouter.get("/:playerId/blood-pressure", async (request, response) => {
   try {
     const player = await Player.findOne({ id: request.params.playerId });
@@ -102,6 +121,7 @@ VitalsRouter.get("/:playerId/blood-pressure", async (request, response) => {
     logger(error, response);
   }
 });
+
 VitalsRouter.get("/:playerId/body-callories", async (request, response) => {
   try {
     const player = await Player.findOne({ id: request.params.playerId });
@@ -114,6 +134,20 @@ VitalsRouter.get("/:playerId/body-callories", async (request, response) => {
     logger(error, response);
   }
 });
+
+VitalsRouter.get("/:playerId/sport-data", async (request, response) => {
+  try {
+    const player = await Player.findOne({ id: request.params.playerId });
+    if (!player) return send404("Player not found!", response);
+    const readings = await SportData.find({
+      playerId: request.params.playerId,
+    });
+    send200(response, "Get player sport data", { readings, player });
+  } catch (error) {
+    logger(error, response);
+  }
+});
+
 VitalsRouter.get("/:playerId/blood-oxygen", async (request, response) => {
   try {
     const player = await Player.findOne({ id: request.params.playerId });
