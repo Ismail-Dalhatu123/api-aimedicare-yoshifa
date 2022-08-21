@@ -19,6 +19,7 @@ const {
   SportData,
   validateAddSportData,
 } = require("../models/vitals/SportData");
+const { getFromToQuery } = require("../utils/funcs");
 const send200 = require("../utils/http/send200");
 const send201 = require("../utils/http/send201");
 const send400 = require("../utils/http/send400");
@@ -46,6 +47,7 @@ VitalsRouter.get("/:playerId/heart-rate", async (request, response) => {
     if (!player) return send404("Player not found!", response);
     const readings = await HeartRate.find({
       playerId: request.params.playerId,
+      ...getFromToQuery(request),
     });
     send200(response, "Get player heart rate", { readings, player });
   } catch (error) {
@@ -115,6 +117,7 @@ VitalsRouter.get("/:playerId/blood-pressure", async (request, response) => {
     if (!player) return send404("Player not found!", response);
     const readings = await BloodPressure.find({
       playerId: request.params.playerId,
+      ...getFromToQuery(request),
     });
     send200(response, "Get player blood pressure", { readings, player });
   } catch (error) {
@@ -128,6 +131,7 @@ VitalsRouter.get("/:playerId/body-callories", async (request, response) => {
     if (!player) return send404("Player not found!", response);
     const readings = await BodyCallories.find({
       playerId: request.params.playerId,
+      ...getFromToQuery(request),
     });
     send200(response, "Get player body callories", { readings, player });
   } catch (error) {
@@ -141,6 +145,7 @@ VitalsRouter.get("/:playerId/sport-data", async (request, response) => {
     if (!player) return send404("Player not found!", response);
     const readings = await SportData.find({
       playerId: request.params.playerId,
+      ...getFromToQuery(request),
     });
     send200(response, "Get player sport data", { readings, player });
   } catch (error) {
@@ -154,6 +159,7 @@ VitalsRouter.get("/:playerId/blood-oxygen", async (request, response) => {
     if (!player) return send404("Player not found!", response);
     const readings = await BloodOxygen.find({
       playerId: request.params.playerId,
+      ...getFromToQuery(request),
     });
     send200(response, "Get player blood oxygen", { readings, player });
   } catch (error) {
